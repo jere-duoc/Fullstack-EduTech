@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>EduTech</groupId>
-	<artifactId>Servicio-Curso</artifactId>
+	<artifactId>Servicio-Autorizacion</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>Servicio-Curso</name>
-	<description>Servicio Curso EduTech</description>
+	<name>Servicio-Autorizacion</name>
+	<description>Servicio Autorizacion EduTech </description>
 	<url/>
 	<licenses>
 		<license/>
