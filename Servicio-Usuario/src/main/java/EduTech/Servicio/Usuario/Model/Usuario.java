@@ -5,21 +5,22 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "Usuario")
 public class Usuario {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
     private Integer id;
+
    @Column( unique = true, 
             length = 5,
             nullable = false)
-
     private String run;
-    @Column(nullable = false)
 
+    @Column(nullable = false)
     private String nombre;
-    @Column(nullable = false)
 
+    @Column(nullable = false)
     private Integer edad;
+    
     public Integer getId() {
         return id;
     }

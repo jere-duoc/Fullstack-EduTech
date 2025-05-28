@@ -12,7 +12,7 @@ import EduTech.Servicio.Usuario.Model.Usuario;
 import EduTech.Servicio.Usuario.Service.UsuarioService;
 
 @RestController
-@RequestMapping
+@RequestMapping("/api/v1/usuarios")
 public class UsuarioController {
     @Autowired
     private UsuarioService usuarioService;
