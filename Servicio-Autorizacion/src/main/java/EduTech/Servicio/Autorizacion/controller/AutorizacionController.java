@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/autorizacion") 
+@RequestMapping("/api/v1/autorizacion") 
 public class AutorizacionController {
 
     private final AutorizacionService autorizacionService;
