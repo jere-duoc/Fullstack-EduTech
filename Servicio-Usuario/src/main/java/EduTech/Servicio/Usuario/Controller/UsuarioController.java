@@ -26,9 +26,13 @@ public class UsuarioController {
     public UsuarioController(){
     }
 
-    @GetMapping ResponseEntity<List<Usuario>>listar(){
-        List<Usuario> Usuario = this.usuarioService.findAll();
-        return Usuario.isEmpty()?ResponseEntity.noContent().build() : ResponseEntity.ok(Usuario);
+    @GetMapping 
+    public ResponseEntity<List<Usuario>>listar(){
+        List<Usuario> usuarios = usuarioService.findAll();
+        if (usuarios.isEmpty()){
+            return ResponseEntity.noContent().build();
+        }  
+        return ResponseEntity.ok(usuarios);
     }
 
     @PostMapping
@@ -57,6 +61,7 @@ public class UsuarioController {
             user.setRun(user.getRun());
             user.setNombre(user.getNombre());
             user.setEdad(user.getEdad());
+            user.setCelular(user.getCelular());
 
             usuarioService.save(user);
             return ResponseEntity.ok(user);
