@@ -1,6 +1,7 @@
 package EduTech.Servicio.Usuario.Controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,67 +18,125 @@ import org.springframework.web.bind.annotation.RestController;
 import EduTech.Servicio.Usuario.Model.Usuario;
 import EduTech.Servicio.Usuario.Service.UsuarioService;
 
+
+class CredencialesDTO {
+    private String run;
+    private String password;
+
+    public String getRun() {
+        return run;
+    }
+    public void setRun(String run) {
+        this.run = run;
+    }
+    public String getPassword() {
+        return password;
+    }
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+}
+
+class UsuarioResponseDTO {
+    private Integer id;
+    private String run;
+    private String nombre;
+    private Integer edad;
+
+    public UsuarioResponseDTO(Usuario usuario) {
+        this.id = usuario.getId();
+        this.run = usuario.getRun();
+        this.nombre = usuario.getNombre();
+        this.edad = usuario.getEdad();
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public String getRun() {
+        return run;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public Integer getEdad() {
+        return edad;
+    }
+
+    
+}
+
 @RestController
 @RequestMapping("/api/v1/usuarios")
 public class UsuarioController {
 
+    private final UsuarioService usuarioService;
+
     @Autowired
-    private UsuarioService usuarioService;
-    public UsuarioController(){
+    public UsuarioController(UsuarioService usuarioService) {
+        this.usuarioService = usuarioService;
     }
 
-    @GetMapping 
-    public ResponseEntity<List<Usuario>>listar(){
-        List<Usuario> usuarios = usuarioService.findAll();
-        if (usuarios.isEmpty()){
-            return ResponseEntity.noContent().build();
-        }  
-        return ResponseEntity.ok(usuarios);
-    }
-
-    @PostMapping
-    public ResponseEntity<Usuario> guardar(@RequestBody Usuario usuario){
-        Usuario nuevoUsuario = usuarioService.save(usuario);
-        return ResponseEntity.status(HttpStatus.CREATED).body(nuevoUsuario);
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Usuario> buscar(@PathVariable Long id){
+    @PostMapping("/registrar")
+    public ResponseEntity <?> registrarUsuario(@RequestBody Usuario usuario) { 
         try {
-            Usuario usuario = usuarioService.findById(id);
-            return ResponseEntity.ok(usuario);
-
+            Usuario nuevoUsuario = usuarioService.registrarUsuario(usuario);
+            return new ResponseEntity<>(new UsuarioResponseDTO(nuevoUsuario), HttpStatus.CREATED); 
         } catch (Exception e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 
+    @PostMapping("/validar-credenciales")
+    public ResponseEntity <?> validarCredenciales(@RequestBody CredencialesDTO credenciales) {
+        Optional<Usuario> usuarioOpt = usuarioService.validarCredenciales(credenciales.getRun(),credenciales.getPassword());
+        if (usuarioOpt.isPresent()) {
+            return ResponseEntity.ok(new UsuarioResponseDTO(usuarioOpt.get()));
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Run o contraseña incorrectos.");
+        }
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Usuario>>listar(){
+        List<Usuario> usuarios = this.usuarioService.findAll();
+        return usuarios.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(usuarios);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> obtenerUsuarioPorId(@PathVariable Integer id) {
+        Optional<Usuario> usuarioOpt = usuarioService.findById(id);
+        if (usuarioOpt.isPresent()) {
+            return ResponseEntity.ok(new UsuarioResponseDTO(usuarioOpt.get()));
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuario no encontrado con ID: " + id);
+        }
+    }
     @PutMapping("/{id}")
-    public ResponseEntity<Usuario> actualizar(@PathVariable Long id, @RequestBody Usuario usuario){
-        try {
-            Usuario user = usuarioService.findById(id);
-            Integer id_2 = id.intValue();
-            user.setId(id_2);
-            user.setRun(user.getRun());
-            user.setNombre(user.getNombre());
-            user.setEdad(user.getEdad());
-            user.setCelular(user.getCelular());
+    public ResponseEntity<?> actualizarUsuario(@PathVariable Integer id, @RequestBody Usuario usuarioActualizado) {
+        
 
-            usuarioService.save(user);
-            return ResponseEntity.ok(user);
-
-        } catch (Exception e) {
-            return ResponseEntity.notFound().build();
+        Optional<Usuario> usuarioOpt = usuarioService.actualizarUsuario(id, usuarioActualizado);
+        if (usuarioOpt.isPresent()) {
+            return ResponseEntity.ok(new UsuarioResponseDTO(usuarioOpt.get()));
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuario no encontrado con ID: " + id + " para actualizar.");
         }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> eliminar(@PathVariable Long id) {
-        try {
-            usuarioService.delete(id);
-            return ResponseEntity.noContent().build();
-        } catch (Exception e) {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<Void> eliminarUsuario(@PathVariable Integer id) {
+        boolean eliminado = usuarioService.eliminarUsuario(id);
+        if (eliminado) {
+          
+            return ResponseEntity.noContent().build(); 
+        } else {
+          
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); 
         }
     }
 }
