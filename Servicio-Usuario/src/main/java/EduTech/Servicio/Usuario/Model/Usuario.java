@@ -10,7 +10,7 @@ public class Usuario {
 
     private Integer id;
    @Column( unique = true, 
-            length = 5,
+            length = 12,
             nullable = false)
 
     private String run;
@@ -19,10 +19,19 @@ public class Usuario {
     private String nombre;
     @Column(nullable = false)
 
+    private String password;
+    @Column(nullable = false)
+
     private Integer edad;
     public Integer getId() {
         return id;
     }
+
+
+    public Usuario(){
+
+    }
+
     public void setId(Integer id) {
         this.id = id;
     }
@@ -38,6 +47,12 @@ public class Usuario {
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
+    public String getPassword(){
+        return password;
+    }
+    public void setPassword(String password){
+        this.password = password;
+    }
     public Integer getEdad() {
         return edad;
     }
@@ -52,6 +67,7 @@ public class Usuario {
         result = prime * result + ((id == null) ? 0 : id.hashCode());
         result = prime * result + ((run == null) ? 0 : run.hashCode());
         result = prime * result + ((nombre == null) ? 0 : nombre.hashCode());
+        result = prime * result + ((password == null) ? 0 : password.hashCode());
         result = prime * result + ((edad == null) ? 0 : edad.hashCode());
         return result;
     }
@@ -79,6 +95,11 @@ public class Usuario {
                 return false;
         } else if (!nombre.equals(other.nombre))
             return false;
+        if (password == null){
+            if (other.password != null)
+            return false;
+        } else if (!password.equals(other.password))
+            return false;
         if (edad == null) {
             if (other.edad != null)
                 return false;
@@ -93,10 +114,11 @@ public class Usuario {
     }
     
 
-    public Usuario(Integer id, String run, String nombre, Integer edad) {
+    public Usuario(Integer id, String run, String nombre, String password, Integer edad) {
         this.id = id;
         this.run = run;
         this.nombre = nombre;
+        this.password = password;
         this.edad = edad;
     }
 
