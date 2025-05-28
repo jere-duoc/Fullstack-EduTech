@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class CursoService {
@@ -18,24 +17,19 @@ public class CursoService {
         return cursoRepository.save(curso);
     }
 
-    public Curso editarCurso(Long id, Curso cursoActualizado){
-        Optional<Curso> cursoExistente = cursoRepository.findById(id);
-        
-        if (cursoExistente.isPresent()){
-            Curso curso = cursoExistente.get();
-            curso.setNombreCurso(cursoActualizado.getNombreCurso());
-
-            return cursoRepository.save(curso);
-        }
-        return null;
+    public Curso editarCurso(Curso curso){
+        return cursoRepository.save(curso);
     }
 
     public List<Curso> listaCursos() {
         return cursoRepository.findAll();
     }
 
-    public Optional<Curso> obtenerCursoPorId(Long id) {
-        return cursoRepository.findById(id);
+    public Curso obtenerCursoPorId(Long id) {
+        return cursoRepository.findById(id).get();
     }
 
+    public void delete(long id){
+        cursoRepository.deleteById(id);
+    }
 }

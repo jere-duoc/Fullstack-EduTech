@@ -1,6 +1,11 @@
 package EduTech.Servicio.Usuario.Model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "Usuario")
@@ -10,7 +15,7 @@ public class Usuario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-   @Column( unique = true, 
+    @Column( unique = true, 
             length = 5,
             nullable = false)
     private String run;
@@ -20,7 +25,7 @@ public class Usuario {
 
     @Column(nullable = false)
     private Integer edad;
-    
+
     public Integer getId() {
         return id;
     }
